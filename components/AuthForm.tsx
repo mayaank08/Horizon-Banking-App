@@ -46,8 +46,6 @@ const AuthForm = ({ type }: { type: string }) => {
       setIsLoading(true);
 
       try {
-        // Sign up with Appwrite & create plaid token
-        
         if(type === 'sign-up') {
           const userData = {
             firstName: data.firstName!,
@@ -64,6 +62,10 @@ const AuthForm = ({ type }: { type: string }) => {
 
           const newUser = await signUp(userData);
 
+          if (!newUser) {
+            throw new Error('Failed to create account. Please check your information and try again.');
+          }
+
           setUser(newUser);
         }
 
@@ -73,10 +75,18 @@ const AuthForm = ({ type }: { type: string }) => {
             password: data.password,
           })
 
-          if(response) router.push('/')
+          if(!response) {
+            throw new Error('Invalid email or password.');
+          }
+
+          router.push('/')
         }
       } catch (error) {
-        console.log(error);
+        console.error('Auth error:', error);
+        // Show error to user (you'll need to add a state for error message and display it in the UI)
+        form.setError('root', { 
+          message: error instanceof Error ? error.message : 'An unexpected error occurred.'
+        });
       } finally {
         setIsLoading(false);
       }
@@ -130,7 +140,7 @@ const AuthForm = ({ type }: { type: string }) => {
                   <CustomInput control={form.control} name='city' label="City" placeholder='Enter your city' />
                   <div className="flex gap-4">
                     <CustomInput control={form.control} name='state' label="State" placeholder='Example: NY' />
-                    <CustomInput control={form.control} name='postalCode' label="Postal Code" placeholder='Example: 11101' />
+                    <CustomInput control={form.control} name='postalCode' label="Postal Code" placeholder='Example: 12345' />
                   </div>
                   <div className="flex gap-4">
                     <CustomInput control={form.control} name='dateOfBirth' label="Date of Birth" placeholder='YYYY-MM-DD' />
@@ -143,7 +153,10 @@ const AuthForm = ({ type }: { type: string }) => {
 
               <CustomInput control={form.control} name='password' label="Password" placeholder='Enter your password' />
 
-              <div className="flex flex-col gap-4">
+              <div>
+                {form.formState.errors.root && (
+                  <p className="text-sm text-red-500 mb-4">{form.formState.errors.root.message}</p>
+                )}
                 <Button type="submit" disabled={isLoading} className="form-btn">
                   {isLoading ? (
                     <>

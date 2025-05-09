@@ -55,11 +55,24 @@ export const createDwollaCustomer = async (
   newCustomer: NewDwollaCustomerParams
 ) => {
   try {
-    return await dwollaClient
-      .post("customers", newCustomer)
-      .then((res) => res.headers.get("location"));
-  } catch (err) {
+    const response = await dwollaClient.post("customers", newCustomer);
+    const location = response.headers.get("location");
+    if (!location) {
+      throw new Error("Failed to get customer location from Dwolla response");
+    }
+    return location;
+  } catch (err: any) {
     console.error("Creating a Dwolla Customer Failed: ", err);
+    
+    // Handle validation errors
+    if (err.body?._embedded?.errors) {
+      const validationErrors = err.body._embedded.errors
+        .map((e: any) => `${e.path}: ${e.message}`)
+        .join(', ');
+      throw new Error(`Validation failed: ${validationErrors}`);
+    }
+    
+    throw new Error(err.body?.message || "Failed to create Dwolla customer");
   }
 };
 
