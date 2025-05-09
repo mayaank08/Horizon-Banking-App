@@ -9,6 +9,8 @@
   <h3 align="center">A Bank Application</h3>
 </div>
 
+## Live Demo - https://horizon-banking-app-phi.vercel.app/
+
 ## <a name="introduction">🤖 Introduction</a>
 
 Built with Next.js, Horizon is a financial SaaS platform that connects to multiple bank accounts, displays transactions in real-time, allows users to transfer money to other platform users, and manages their finances altogether. 
