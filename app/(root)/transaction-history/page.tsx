@@ -20,7 +20,6 @@ const TransactionHistory = async ({ searchParams: { id, page }}:SearchParamProps
 
   const account = await getAccount({ appwriteItemId })
 
-
 const rowsPerPage = 10;
 const totalPages = Math.ceil(account?.transactions.length / rowsPerPage);
 

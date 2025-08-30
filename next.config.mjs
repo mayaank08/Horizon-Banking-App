@@ -41,7 +41,7 @@ disableLogger: true,
 
 // Enables automatic instrumentation of Vercel Cron Monitors.
 // See the following for more information:
-// https://docs.sentry.io/product/crons/
+// https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 // https://vercel.com/docs/cron-jobs
 automaticVercelMonitors: true,
 });
